@@ -4,16 +4,16 @@ let user;
 const mEthPrice = 1600;
 const currentYear = 2022;
 
-const contract_address = "0xbF9bf3C4aDEe89B833327D3159b69b6e1136bf4d"; // 따옴표 안에 주소값 복사 붙여넣기
+const contract_address = "0xbb03baDa9Ab4a7629dF0a2A18A537dAdECd26243"; // 따옴표 안에 주소값 복사 붙여넣기
 
 const logIn = async () => {
   const ID = prompt("choose your ID");
 
   // 개발 시 (ganache)
-  web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+  // web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
 
   // 과제 제출 시 (metamask)
-  // web3 = await metamaskRequest();
+  web3 = await metamaskRequest();
 
   user = await getAccountInfos(Number(ID));
 
@@ -158,7 +158,6 @@ const shareRoom = async () => {
   await _shareRoom(name, location, price);
 
   await _updateUserBalance(user);
-  _updateRooms();
 };
 
 const _shareRoom = async (name, location, price) => {
@@ -174,9 +173,8 @@ const _shareRoom = async (name, location, price) => {
     .on("receipt", function (receipt) {
       console.log(receipt);
       alert("등록");
+      _updateRooms();
     });
-
-  _updateRooms();
 };
 
 const _getMyRents = async () => {
@@ -324,6 +322,7 @@ const _rentRoom = async (roomId, checkInDate, checkOutDate, price) => {
     })
     .on("receipt", function (receipt) {
       alert("대여가 완료되었습니다.");
+      _updateRooms();
     })
     .on("error", function (error) {
       const msgIdx = error.message.indexOf("revert");
